@@ -1,0 +1,80 @@
+
+class trieNode{
+    public:
+    bool isLeaf;
+    trieNode **arr;
+    trieNode(){
+            arr = new trieNode* [10];
+            isLeaf = false;
+            for(int i = 0; i < 10; i++){
+                arr[i] = NULL;
+            }
+        }
+};
+
+class trie{
+    public:
+        trieNode *root;
+        trie(){
+            root = new trieNode();
+        }
+    private:
+        void createTrie(trieNode *node,int digit){
+        if(digit == 0){
+            node->isLeaf = true;
+            return;
+        }
+
+        for(int i = 0; i < 10; i++){
+            trieNode *newNode = new trieNode();
+            node->arr[i] = newNode;
+            createTrie(node->arr[i],digit-1);
+        }
+
+
+    }
+
+    void lexNumbers(trieNode* node,int n,vector<int>&res,int num){
+        if(num <= n && num > 0)res.push_back(num);
+        if(node->isLeaf == true){
+            return;
+        }
+
+        for(int i = 0; i < 10; i++){
+            if(node->arr[i]){
+                lexNumbers(node->arr[i],n,res,num*10+i);
+            }
+        }
+    }
+    public:
+    void createTrie(int n){
+        int digit = 0;
+        while(n > 0){
+            digit++;
+            n /= 10;
+        }
+
+        createTrie(root,digit);
+    }
+
+    void lexNumbers(int n,vector<int>&res){
+        lexNumbers(root,n,res,0);
+    }
+
+
+};
+
+
+
+class Solution {
+
+public:
+    vector<int> lexicalOrder(int n) {
+        trie t;
+        t.createTrie(n);
+        vector<int>res;
+        t.lexNumbers(n,res);
+        int size = res.size();
+        return {res.end()-n,res.end()};
+    }
+};
