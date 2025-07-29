@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+    class DisjointSet{
+        vector<int>parent,rank;
+        public:
+        DisjointSet(int n){
+            rank.resize(n+1,0);
+            parent.resize(n+1,0);
+            for(int i = 0; i <= n; i++)parent[i] = i;
+        }
+
+        int findParent(int node){
+            if(parent[node] == node)return node;
+            return parent[node] = findParent(parent[node]);
+        }
+
+        void unionByRank(int u,int v){
+            int ultU = findParent(u);
+            int ultV = findParent(v);
+            if(ultU == ultV)return;
+            if(rank[ultU] < rank[ultV]){
+                parent[ultU] = ultV;
+            }else if(rank[ultU] > rank[ultV]){
+                parent[ultV] = ultU;
+            }else{
+                parent[ultV] = ultU;
+                rank[ultV] = ultU;
+            }
+        }
+
+    };
+
+    int main(){
+        // example
+        DisjointSet ds(8);
+        ds.unionByRank(1,2);
+        ds.unionByRank(1,4);
+        ds.unionByRank(3,2);
+        ds.unionByRank(3,4);
+        ds.unionByRank(5,6);
+        ds.unionByRank(6,7);
+        if(ds.findParent(6) ==  ds.findParent(3))cout<<"Same Componenet"<<endl;
+        else cout<<"Different Component"<<endl;
+        ds.unionByRank(4,7);
+        ds.unionByRank(4,5);
+        if(ds.findParent(6) ==  ds.findParent(3))cout<<"Same Componenet"<<endl;
+        else cout<<"Different Component"<<endl;
+        return 0;
+    }
